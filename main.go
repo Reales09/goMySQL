@@ -6,5 +6,7 @@ import (
 
 func main() {
 	db.Connect()
+
 	db.Close()
+	db.Ping()
 }
