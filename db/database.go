@@ -39,8 +39,53 @@ func Ping() {
 	}
 }
 
+//Verifica si una tabla existe o no
+
+func ExisteTable(tableName string) bool {
+	sql := fmt.Sprintf("SHOW TABLES LIKE '%s'", tableName)
+	rows, err := Query(sql)
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
+
+	return rows.Next()
+
+}
+
 // Crea una tabla
 
-func CreateTable(schema string) {
-	db.Exec(schema)
+func CreateTable(schema string, name string) {
+
+	if !ExisteTable(name) {
+		_, err := db.Exec(schema)
+
+		if err != nil {
+
+			fmt.Println(err)
+		}
+	}
+
+}
+
+// Polimorfismo de Exec
+func Exec(query string, args ...interface{}) (sql.Result, error) {
+	result, err := db.Exec(query, args...)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return result, err
+
+}
+
+// Polimorfismo de Query
+func Query(query string, args ...interface{}) (*sql.Rows, error) {
+	rows, err := db.Query(query, args...)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return rows, err
+
 }

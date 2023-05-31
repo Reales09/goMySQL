@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"gomysql/db"
-	"gomysql/models"
 )
 
 func main() {
 	db.Connect()
-	db.CreateTable(models.UserSchema)
+	fmt.Println(db.ExisteTable("users"))
+	//db.CreateTable(models.UserSchema, "users")
 
 	db.Close()
 	// db.Ping()
