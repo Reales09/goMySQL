@@ -1,6 +1,8 @@
 package models
 
-import "gomysql/db"
+import (
+	"gomysql/db"
+)
 
 type User struct {
 	Id       int64
@@ -8,6 +10,7 @@ type User struct {
 	Password string
 	Email    string
 }
+type Users []User
 
 const UserSchema string = `CREATE TABLE users(
 	id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -26,7 +29,7 @@ func NewUser(username, password, email string) *User {
 
 }
 
-//Crear usuario e insertar
+// Crear usuario e insertar
 func CreaUser(username, password, email string) *User {
 	user := NewUser(username, password, email)
 	user.insert()
@@ -40,4 +43,36 @@ func (user *User) insert() {
 	result, _ := db.Exec(sql, user.Username, user.Password, user.Email)
 	user.Id, _ = result.LastInsertId()
 
+}
+
+// Listar todos los registros
+
+func ListUsers() Users {
+	sql := "SELECT id, username, password, email FROM users"
+	users := Users{}
+
+	rows, _ := db.Query(sql)
+	for rows.Next() {
+		user := User{}
+		rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
+		users = append(users, user)
+	}
+
+	return users
+}
+
+//Obtener un registro
+
+func GetUser(id int) *User {
+	user := NewUser("", "", "")
+
+	sql := "SELECT id, username, password, email FROM users WHERE id=?"
+	rows, _ := db.Query(sql, id)
+
+	for rows.Next() {
+		rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
+
+	}
+
+	return user
 }
