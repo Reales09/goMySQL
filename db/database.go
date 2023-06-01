@@ -67,6 +67,13 @@ func CreateTable(schema string, name string) {
 
 }
 
+//Reiniciar el registro de una tabla
+
+func TruncateTable(tableName string) {
+	sql := fmt.Sprintf("TRUNCATE %s", tableName)
+	Exec(sql)
+}
+
 // Polimorfismo de Exec
 func Exec(query string, args ...interface{}) (sql.Result, error) {
 	result, err := db.Exec(query, args...)
